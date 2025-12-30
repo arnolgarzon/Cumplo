@@ -1,16 +1,21 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import Header from "./components/Header";
+import HabitForm from "./components/HabitForm";
+import HabitList from "./components/HabitList";
 import './App.css'
 
 function App() {
+  const habits = [
+    { id: 1, name: "Beber agua" },
+    { id: 2, name: "Leer 20 minutos" }
+  ];
+
   return (
     <div>
-      <h1>Cumplo</h1>
-      <p>Pequeños hábitos, grandes promesas cumplidas.</p>
+      <Header />
+      <HabitForm />
+      <HabitList habits={habits} />
     </div>
   );
 }
 
 export default App;
-

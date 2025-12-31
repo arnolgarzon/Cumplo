@@ -18,13 +18,31 @@ function App() {
 
   function toggleHabit(id) {
     setHabits(prevHabits =>
-      prevHabits.map(habit =>
-        habit.id === id
-          ? { ...habit, completed: !habit.completed }
-          : habit
-      )
+      prevHabits.map(habit => {
+        if (habit.id !== id) return habit;
+
+        const completed = !habit.completed;
+        const streak = completed
+          ? habit.streak + 1
+          : Math.max(0, habit.streak - 1);
+
+        return { ...habit, completed, streak };
+      })
     );
   }
+
+
+  function addHabit(name) {
+    const newHabit = {
+      id: Date.now(),
+      name,
+      completed: false,
+      streak: 0
+    };
+
+    setHabits(prev => [...prev, newHabit]);
+  }
+
 
 
   return (

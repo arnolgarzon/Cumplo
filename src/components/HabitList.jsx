@@ -1,10 +1,14 @@
 import HabitItem from "./HabitItem";
 
-function HabitList({ habits }) {
+function HabitList({ habits, onToggleHabit }) {
   return (
     <ul>
       {habits.map(habit => (
-        <HabitItem key={habit.id} name={habit.name} />
+        <HabitItem
+          key={habit.id}
+          habit={habit}
+          onToggleHabit={onToggleHabit}
+        />
       ))}
     </ul>
   );

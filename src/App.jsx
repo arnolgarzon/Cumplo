@@ -1,19 +1,41 @@
+import { useState } from "react";
 import Header from "./components/Header";
 import HabitForm from "./components/HabitForm";
 import HabitList from "./components/HabitList";
-import './App.css'
 
 function App() {
-  const habits = [
-    { id: 1, name: "Beber agua" },
-    { id: 2, name: "Leer 20 minutos" }
-  ];
+  const [habits, setHabits] = useState([]);
+
+  function addHabit(name) {
+    const newHabit = {
+      id: Date.now(),
+      name,
+      completed: false
+    };
+
+    setHabits(prevHabits => [...prevHabits, newHabit]);
+  }
+
+  function toggleHabit(id) {
+    setHabits(prevHabits =>
+      prevHabits.map(habit =>
+        habit.id === id
+          ? { ...habit, completed: !habit.completed }
+          : habit
+      )
+    );
+  }
+
 
   return (
     <div>
       <Header />
-      <HabitForm />
-      <HabitList habits={habits} />
+      <HabitForm onAddHabit={addHabit} />
+      <HabitList
+        habits={habits}
+        onToggleHabit={toggleHabit}
+      />
+
     </div>
   );
 }

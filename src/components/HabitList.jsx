@@ -1,6 +1,6 @@
 import HabitItem from "./HabitItem";
 
-function HabitList({ habits, onToggleHabit }) {
+function HabitList({ habits, onToggleHabit, onDeleteHabit }) {
   return (
     <ul>
       {habits.map(habit => (
@@ -8,6 +8,7 @@ function HabitList({ habits, onToggleHabit }) {
           key={habit.id}
           habit={habit}
           onToggleHabit={onToggleHabit}
+          onDeleteHabit={onDeleteHabit}
         />
       ))}
     </ul>

@@ -1,4 +1,4 @@
-function HabitItem({ habit, onToggleHabit }) {
+function HabitItem({ habit, onToggleHabit, onDeleteHabit }) {
   return (
     <li
       style={{
@@ -36,6 +36,17 @@ function HabitItem({ habit, onToggleHabit }) {
       >
         {habit.completed ? "Hecho" : "Cumplir"}
       </button>
+
+      <button
+        onClick={() => onDeleteHabit(habit.id)}
+        style={{
+          marginLeft: "8px",
+          backgroundColor: "#ffe5e5"
+        }}
+      >
+        🗑️
+      </button>
+
     </li>
   );
 }

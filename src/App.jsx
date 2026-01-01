@@ -1,19 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import HabitForm from "./components/HabitForm";
 import HabitList from "./components/HabitList";
 
 function App() {
-  const [habits, setHabits] = useState([]);
+  // 1️⃣ Cargar desde localStorage al iniciar
+  const [habits, setHabits] = useState(() => {
+    const saved = localStorage.getItem("habits");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // 2️⃣ Guardar automáticamente cuando cambien
+  useEffect(() => {
+    localStorage.setItem("habits", JSON.stringify(habits));
+  }, [habits]);
 
   function addHabit(name) {
     const newHabit = {
       id: Date.now(),
       name,
-      completed: false
+      completed: false,
+      streak: 0
     };
 
-    setHabits(prevHabits => [...prevHabits, newHabit]);
+    setHabits(prev => [...prev, newHabit]);
   }
 
   function toggleHabit(id) {
@@ -31,18 +41,11 @@ function App() {
     );
   }
 
-
-  function addHabit(name) {
-    const newHabit = {
-      id: Date.now(),
-      name,
-      completed: false,
-      streak: 0
-    };
-
-    setHabits(prev => [...prev, newHabit]);
-  }
-
+  function deleteHabit(id) {
+  setHabits(prevHabits =>
+    prevHabits.filter(habit => habit.id !== id)
+  );
+}
 
 
   return (
@@ -52,8 +55,8 @@ function App() {
       <HabitList
         habits={habits}
         onToggleHabit={toggleHabit}
+        onDeleteHabit={deleteHabit}
       />
-
     </div>
   );
 }

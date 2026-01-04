@@ -3,95 +3,133 @@ import Header from "./components/Header";
 import HabitForm from "./components/HabitForm";
 import HabitList from "./components/HabitList";
 
-function App() {
-  // 1️⃣ Estado con carga inicial desde localStorage
-  const [habits, setHabits] = useState(() => {
+/* =========================
+   🧠 HELPERS (FUTURO HOOK)
+========================= */
+
+// Fecha normalizada (clave para rachas)
+function getTodayKey() {
+  return new Date().toISOString().split("T")[0];
+}
+
+// Cargar hábitos seguros desde localStorage
+function loadHabits() {
+  try {
     const saved = localStorage.getItem("habits");
     return saved ? JSON.parse(saved) : [];
-  });
+  } catch {
+    return [];
+  }
+}
 
-  // 2️⃣ Guardar automáticamente cuando cambien
-  useEffect(() => {
-  const today = new Date().toDateString();
-
-  setHabits(prev =>
-    prev.map(habit =>
-      habit.lastCompleted !== today
-        ? { ...habit, completed: false }
-        : habit
-    )
+function App() {
+  /* =========================
+     📦 ESTADO PRINCIPAL
+  ========================= */
+  const [habits, setHabits] = useState(loadHabits);
+  const [lastOpenDate, setLastOpenDate] = useState(
+    localStorage.getItem("lastOpenDate")
   );
-}, []);
 
+  const today = getTodayKey();
 
-  // 3️⃣ Métricas (SIEMPRE dentro del componente)
+  /* =========================
+     🔄 RESET DIARIO AUTOMÁTICO
+  ========================= */
+  useEffect(() => {
+    if (lastOpenDate !== today) {
+      setHabits(prev =>
+        prev.map(habit => ({
+          ...habit,
+          completed: false
+        }))
+      );
+
+      setLastOpenDate(today);
+      localStorage.setItem("lastOpenDate", today);
+    }
+  }, [lastOpenDate, today]);
+
+  /* =========================
+     💾 PERSISTENCIA
+  ========================= */
+  useEffect(() => {
+    localStorage.setItem("habits", JSON.stringify(habits));
+  }, [habits]);
+
+  /* =========================
+     📊 MÉTRICAS (ESCALABLES)
+  ========================= */
   const completedCount = habits.filter(h => h.completed).length;
   const totalCount = habits.length;
+  const completionRate =
+    totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
 
-  // 4️⃣ Agregar hábito
+  /* =========================
+     ➕ AGREGAR HÁBITO
+  ========================= */
   function addHabit(name) {
     if (!name.trim()) return;
 
     const newHabit = {
-      id: Date.now(),
-      name,
+      id: crypto.randomUUID(), // 🔐 más seguro que Date.now
+      name: name.trim(),
       completed: false,
       streak: 0,
-      lastCompleted: null
+      bestStreak: 0,
+      lastCompleted: null,
+      createdAt: today
     };
-
 
     setHabits(prev => [...prev, newHabit]);
   }
 
-  // 5️⃣ Marcar / desmarcar hábito
+  /* =========================
+     ✅ CUMPLIR HÁBITO
+  ========================= */
   function toggleHabit(id) {
-    const today = new Date().toDateString();
-
-    setHabits(prevHabits =>
-      prevHabits.map(habit => {
+    setHabits(prev =>
+      prev.map(habit => {
         if (habit.id !== id) return habit;
 
-        // 🚫 Ya cumplido hoy
-        if (habit.lastCompleted === today) {
-          return habit;
-        }
+        // 🚫 ya cumplido hoy
+        if (habit.lastCompleted === today) return habit;
 
-        const completed = true;
-        const streak = habit.lastCompleted
-          ? habit.streak + 1
-          : habit.streak + 1;
+        const newStreak = habit.streak + 1;
 
         return {
           ...habit,
-          completed,
-          streak,
+          completed: true,
+          streak: newStreak,
+          bestStreak: Math.max(habit.bestStreak, newStreak),
           lastCompleted: today
         };
       })
     );
   }
 
-
-  // 6️⃣ Eliminar hábito
+  /* =========================
+     🗑️ ELIMINAR HÁBITO
+  ========================= */
   function deleteHabit(id) {
-    setHabits(prevHabits =>
-      prevHabits.filter(habit => habit.id !== id)
-    );
+    setHabits(prev => prev.filter(h => h.id !== id));
   }
 
+  /* =========================
+     🧩 UI
+  ========================= */
   return (
-    <div>
+    <div className="app">
       <Header />
 
-      <p>
-        Completados hoy: {completedCount} / {totalCount}
+      <p className="stats">
+        Completados hoy: {completedCount} / {totalCount} · {completionRate}%
       </p>
 
       <HabitForm onAddHabit={addHabit} />
 
       {habits.length === 0 ? (
-        <p>🌱 Empieza agregando tu primer hábito</p>
+        <p className="empty">🌱 Empieza agregando tu primer hábito</p>
       ) : (
         <HabitList
           habits={habits}

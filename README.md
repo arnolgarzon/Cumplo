@@ -1,16 +1,61 @@
-# React + Vite
+# 🌱 Habit Tracker App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web para crear, cumplir y mantener hábitos diarios, con sistema de rachas inteligentes y almacenamiento local.
 
-Currently, two official plugins are available:
+Diseñada con enfoque **mobile-first**, visual limpio tipo app y lógica preparada para crecer.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Características
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- ✅ Crear hábitos personalizados
+- 🔁 Sistema de rachas diarias automático
+- 🔥 Mejor racha histórica por hábito
+- 📆 Reinicio visual diario automático
+- 💾 Persistencia con localStorage
+- 📱 Diseño responsive (mobile-first)
+- 🃏 Diseño tipo card premium
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🧠 Lógica de rachas
+
+- Un hábito solo puede cumplirse **una vez por día**
+- Al cumplirlo:
+  - La racha aumenta en +1
+  - Se actualiza la mejor racha
+- Al iniciar un nuevo día:
+  - El hábito vuelve a estado pendiente
+  - La racha se conserva
+
+---
+
+## 🛠️ Tecnologías usadas
+
+- React (Hooks)
+- JavaScript ES6+
+- CSS3 (mobile-first)
+- localStorage
+
+---
+
+## 📂 Estructura del proyecto
+
+src/
+├── components/
+│ ├── Header.jsx
+│ ├── HabitForm.jsx
+│ ├── HabitList.jsx
+│ └── HabitItem.jsx
+├── App.jsx
+├── index.css
+└── main.jsx
+
+
+---
+
+## 🚀 Cómo ejecutar el proyecto
+
+```bash
+npm install
+npm run dev

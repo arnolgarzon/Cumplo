@@ -1,72 +1,48 @@
 function HabitItem({ habit, onToggleHabit, onDeleteHabit }) {
   return (
     <li
-      style={{
-        opacity: habit.completed ? 0.6 : 1,
-        backgroundColor: habit.streak >= 3 ? "#e0ffe5" : "transparent",
-        padding: "8px",
-        borderRadius: "6px",
-        marginBottom: "8px",
-        listStyle: "none"
-      }}
+      className={`habit-item 
+        ${habit.completed ? "completed" : ""} 
+        ${habit.streak >= 3 ? "good-streak" : ""}
+      `}
     >
-      {/* Nombre del hábito (clickeable) */}
-      <span
-        style={{
-          textDecoration: habit.completed ? "line-through" : "none",
-          fontWeight: "500",
-          cursor: "pointer"
-        }}
-        onClick={() => onToggleHabit(habit.id)}
-      >
+      <div className="habit-title">
         {habit.name}
-      </span>
+      </div>
 
-      <br />
+      <div className="habit-meta">
+        {habit.streak > 0 ? `🔥 ${habit.streak} días · ${getStreakStatus(habit.streak)}` : "🌱 Empieza hoy"}
+      </div>
 
-      {/* Racha visible solo si existe */}
-      {habit.streak > 0 && (
-        <small>🔥 {habit.streak} días</small>
-      )}
+      <div className="habit-actions">
+        <button
+          className="primary"
+          onClick={() => onToggleHabit(habit.id)}
+          disabled={habit.completed}
+        >
+          {habit.completed ? "Hecho hoy" : "Cumplir"}
+        </button>
 
-      <br />
-
-      {/* Estado de la racha */}
-      <small>{getStreakStatus(habit.streak)}</small>
-
-      <br />
-
-      {/* Botón cumplir */}
-      <button
-        style={{ marginTop: "6px" }}
-        onClick={() => onToggleHabit(habit.id)}
-      >
-        {habit.completed ? "Hecho" : "Cumplir"}
-      </button>
-
-      {/* Botón eliminar con confirmación */}
-      <button
-        onClick={() => {
-          if (confirm("¿Eliminar este hábito?")) {
-            onDeleteHabit(habit.id);
-          }
-        }}
-        style={{
-          marginLeft: "8px",
-          backgroundColor: "#ffe5e5"
-        }}
-      >
-        🗑️
-      </button>
+        <button
+          className="danger"
+          onClick={() => {
+            if (confirm("¿Eliminar este hábito?")) {
+              onDeleteHabit(habit.id);
+            }
+          }}
+        >
+          🗑️
+        </button>
+      </div>
     </li>
   );
 }
 
 function getStreakStatus(streak) {
-  if (streak >= 5) return "🚀 Imparable";
-  if (streak >= 3) return "🔥 En racha";
-  if (streak >= 1) return "💪 Buen comienzo";
-  return "🌱 Empieza hoy";
+  if (streak >= 5) return "Imparable 🚀";
+  if (streak >= 3) return "En racha 🔥";
+  if (streak >= 1) return "Buen comienzo 💪";
+  return "Empieza hoy 🌱";
 }
 
 export default HabitItem;
